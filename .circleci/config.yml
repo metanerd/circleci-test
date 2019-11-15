@@ -1,25 +1,22 @@
 version: 2.1
 
 jobs:
-  trigger_job_on_label_build_apps_for_pr:
+  triggered_job:
     machine: true
-    parameters:
-      is_label_build_apps_for_pr:
-        type: string
-        default: ''
     steps:
-      - when:
-          condition: <<parameters.is_label_build_apps_for_pr>>
-          steps:
-            - run: echo "Label there"
-  no_trigger:
+      name: specially triggered job
+      command: |
+        if [[ ${IS_BUILD_APPS_FOR_PR_LABEL} ]]; then
+          echo "LABEL"
+        fi
+  regular_job:
     machine: true
+    name: normal jobs
     steps:
       - run: echo "No Label"
 
 workflows:
   build-test-deploy:
     jobs:
-      - trigger_job_on_label_build_apps_for_pr:
-          is_label_build_apps_for_pr: ${IS_LABEL_BUILD_APPS_FOR_PR}
-      - no_trigger
+      - triggered_job
+      - regular_job
