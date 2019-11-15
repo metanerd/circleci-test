@@ -1,22 +1,21 @@
 version: 2.1
 
 jobs:
-  triggered_job:
+  job_to_trigger:
     machine: true
     steps:
-      name: specially triggered job
-      command: |
-        if [[ ${IS_BUILD_APPS_FOR_PR_LABEL} ]]; then
-          echo "LABEL"
-        fi
-  regular_job:
+      - run:
+          command: |
+            if [[ ${IS_BUILD_APPS_FOR_PR_LABEL} ]]; then
+              echo "LABEL"
+            fi
+  job_regular:
     machine: true
-    name: normal jobs
     steps:
       - run: echo "No Label"
 
 workflows:
   build-test-deploy:
     jobs:
-      - triggered_job
-      - regular_job
+      - job_to_trigger
+      - job_regular
