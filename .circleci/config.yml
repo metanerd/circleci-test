@@ -1,22 +1,33 @@
-version: 2
+version: 2.1
+
+parameters:
+  is_build_apps_for_pr:
+    type: boolean
+    default: false
 
 jobs:
-  job_to_trigger:
+  test:
     machine: true
     steps:
-      - run:
-          command: |
-            if [[ ${IS_BUILD_APPS_FOR_PR_LABEL} ]]; then
-              echo "LABEL"
-            fi
-  job_regular:
+    - run: echo "dependency"
+  build_job:
     machine: true
     steps:
-      - run: echo "No Label"
+    - run: echo "BUILD happening ${CIRCLE_BUILD_URL} and ${CIRCLE_SHA1}"
+  job:
+    machine: true
+    steps:
+    - run: echo "No label, so no build"
 
 workflows:
   version: 2
-  build-test-deploy:
+  label_workflow:
+    when: << pipeline.parameters.is_build_apps_for_pr >>
     jobs:
-      - job_to_trigger
-      - job_regular
+    - test
+    - build_job:
+       requires:
+       - test
+  no_label_workflow:
+    jobs:
+    - test
