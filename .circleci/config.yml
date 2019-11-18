@@ -5,24 +5,25 @@ parameters:
     type: boolean
     default: false
 
+jobs:
+  test:
+    machine: true
+    steps:
+      - run: echo "dependency"
+  build_job:
+    machine: true
+    steps:
+      - run: echo "building ${CIRCLE_BUILD_URL} and ${CIRCLE_SHA1}"
+
 workflows:
   version: 2
   label_workflow:
     when: << pipeline.parameters.is_build_apps_for_pr >>
     jobs:
-      test:
-        machine: true
-        steps:
-        - run: echo "dependency"
-      build_job:
-        machine: true
-        steps:
-        - run: echo "BUILD happening ${CIRCLE_BUILD_URL} and ${CIRCLE_SHA1}"
+      - test
+      - build_job:
         requires:
-        - test
+          - test
   no_label_workflow:
     jobs:
-      test:
-        machine: true
-        steps:
-        - run: echo "dependency"
+      - test
