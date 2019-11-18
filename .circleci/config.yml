@@ -1,29 +1,25 @@
 version: 2.1
 
 parameters:
-  is_build_apps_for_pr:
+  run_integration_tests:
     type: boolean
     default: false
 
 jobs:
-  test:
+  mytestjob:
     machine: true
     steps:
-      - run: echo "dependency"
-  build_job:
+      - run: echo "test"
+  dummy:
     machine: true
     steps:
-      - run: echo "building ${CIRCLE_BUILD_URL} and ${CIRCLE_SHA1}"
-
+      - run: echo "dummy"
 workflows:
   version: 2
-  label_workflow:
-    when: << pipeline.parameters.is_build_apps_for_pr >>
+  integration_tests:
+    when: << pipeline.parameters.run_integration_tests >>
     jobs:
-      - test
-      - build_job:
-          requires:
-          - test
-  no_label_workflow:
+      - mytestjob
+  other:
     jobs:
-      - test
+      - dummy
