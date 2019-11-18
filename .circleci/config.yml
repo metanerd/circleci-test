@@ -16,12 +16,13 @@ jobs:
       - run: echo "dummy"
 workflows:
   version: 2
-  run:
-    when: << pipeline.parameters.run >>
-    jobs:
-      - mytestjob
-    requires:
-      - dummy
   other:
     jobs:
       - dummy
+  triggered:
+    when: << pipeline.parameters.run >>
+    jobs:
+      - dummy
+      - mytestjob:
+          requires:
+            - dummy
