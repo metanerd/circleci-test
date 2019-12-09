@@ -10,10 +10,12 @@ jobs:
     machine: true
     steps:
       - run: echo "test"
+      - run: echo ${CIRCLE_BRANCH}
   dummy:
     machine: true
     steps:
       - run: echo "dummy"
+      - run: echo ${CIRCLE_BRANCH}
   dummy-artifact:
     docker:
       - image: python:3.6.3-jessie
