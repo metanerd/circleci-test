@@ -24,7 +24,6 @@ jobs:
               --header 'authorization: Basic ${GITHUB_API_TOKEN}' \
               --header 'content-type: application/json' \
               --data '{
-            	"branch": "${CIRCLE_BRANCH}",
             	"parameters": {
             		"branch_external": "${CIRCLE_BRANCH}",
             		"sha": "${CIRCLE_SHA1}"
