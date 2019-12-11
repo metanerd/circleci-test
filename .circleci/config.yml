@@ -18,7 +18,7 @@ jobs:
       - run: echo ${CIRCLE_BRANCH}
       - run:
           name: Trigger enterprise
-          command: |-
+          command: >-
             curl --request POST
               --url https://circleci.com/api/v2/project/gh/metanerd/circleci-ee/pipeline
               --header 'authorization: Basic ${GITHUB_API_TOKEN}'
