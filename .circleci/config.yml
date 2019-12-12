@@ -16,16 +16,19 @@ jobs:
     steps:
       - run: echo "dummy"
       - run: echo ${CIRCLE_BRANCH}
-      - run: expr length "${GITHUB_API_TOKEN}"
-      - run:
-          name: Trigger enterprise
-          command: |
-            curl \
-              --request POST \
-              --url https://circleci.com/api/v2/project/gh/metanerd/circleci-ee/pipeline \
-              --header 'authorization: Basic "${GITHUB_API_TOKEN}"' \
-              --header 'content-type: application/json' \
-              --data '{"parameters": {"branch_external": "${CIRCLE_BRANCH}", "sha": "${CIRCLE_SHA1}"}}'
+      - run: expr length "${GITHUB_USER_TOKEN}"
+      - when:
+          condition: $CIRCLE_PULL_REQUEST
+          steps:
+            - run:
+                name: Trigger enterprise
+                command: |
+                  curl \
+                    --request POST \
+                    --url https://circleci.com/api/v2/project/gh/metanerd/circleci-ee/pipeline \
+                    --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
+                    --header 'content-type: application/json' \
+                    --data '{"parameters": {"branch_external": "${CIRCLE_BRANCH}", "sha": "${CIRCLE_SHA1}"}}'
 
   dummy-artifact:
     docker:
@@ -47,7 +50,8 @@ workflows:
   version: 2
   other:
     jobs:
-      - dummy
+      - dummy:
+          context: metanerd-trigger-ee
   triggered:
     when: << pipeline.parameters.run >>
     jobs:
