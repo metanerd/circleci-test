@@ -1,9 +1,9 @@
 version: 2.1
 
-parameters:
-  run:
-    type: boolean
-    default: false
+#parameters:
+#  run:
+#    type: boolean
+#    default: false
 
 jobs:
 #  mytestjob:
@@ -50,7 +50,8 @@ workflows:
   version: 2
   other:
     jobs:
-      - dummy
+      - dummy:
+          context: metanerd-trigger-ee
 #  triggered:
 #    when: << pipeline.parameters.run >>
 #    jobs:
