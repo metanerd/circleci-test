@@ -16,6 +16,7 @@ jobs:
     steps:
       - run: echo "dummy"
       - run: echo ${CIRCLE_BRANCH}
+      - run: echo ${HOME}
       - when:
           condition: $CIRCLE_PULL_REQUEST
           steps:
