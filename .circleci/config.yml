@@ -1,16 +1,7 @@
 version: 2.1
 
-#parameters:
-#  run:
-#    type: boolean
-#    default: false
 
 jobs:
-  #  mytestjob:
-  #    machine: true
-  #    steps:
-  #      - run: echo "test"
-  #      - run: echo ${CIRCLE_BRANCH}
   dummy:
     machine: true
     steps:
@@ -31,38 +22,9 @@ jobs:
               --header 'content-type: application/json' \
               --data '{"parameters": {"branch_external": "${CIRCLE_BRANCH}", "sha": "${CIRCLE_SHA1}"}}'
 
-#  dummy-artifact:
-#    docker:
-#      - image: python:3.6.3-jessie
-#    working_directory: /tmp
-#    steps:
-#      - run:
-#          name: Creating Dummy Artifacts
-#          command: |
-#            echo "my artifact file" > /tmp/artifact-1;
-#            mkdir /tmp/artifacts;
-#            echo "my artifact files in a dir" > /tmp/artifacts/artifact-2;
-#      - store_artifacts:
-#          path: /tmp/artifact-1
-#          destination: artifact-file
-#      - store_artifacts:
-#          path: /tmp/artifacts
 workflows:
   version: 2
   other:
     jobs:
       - dummy:
           context: metanerd-trigger-ee
-#  triggered:
-#    when: << pipeline.parameters.run >>
-#    jobs:
-#      - dummy
-#      - mytestjob:
-#          requires:
-#            - dummy
-#  artifact-test:
-#    jobs:
-#      - dummy-artifact:
-#          filters:
-#            branches:
-#              only: /^build-pr-.*/
