@@ -10,7 +10,6 @@ jobs:
       #      - when:
       #          condition: $CIRCLE_PULL_REQUEST
       #          steps:
-      #            - run: expr length "${GITHUB_USER_TOKEN}"
       #            - run: expr length "${TRIGGER_CIRCLECI_EE_TOKEN}"
       - run:
           name: Trigger enterprise
