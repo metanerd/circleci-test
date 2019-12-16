@@ -5,8 +5,8 @@ jobs:
   dummy:
     machine: true
     steps:
-      - run: echo "dummy"
       - run: echo ${CIRCLE_BRANCH}
+      - run: echo ${CIRCLE_SHA1}
       #      - when:
       #          condition: $CIRCLE_PULL_REQUEST
       #          steps:
