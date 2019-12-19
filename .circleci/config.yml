@@ -20,7 +20,7 @@ jobs:
               --url https://circleci.com/api/v2/project/gh/metanerd/circleci-ee/pipeline \
               --user ${TRIGGER_CIRCLECI_EE_TOKEN} \
               --header 'content-type: application/json' \
-              --data '{"parameters": {"external_branch": "${CIRCLE_BRANCH}", "external_sha": "${CIRCLE_SHA1}"}}'
+              --data '{"parameters": {"external_branch": "${CIRCLE_BRANCH}", "external_sha": `echo "${CIRCLE_SHA1}"`}}'
 
 workflows:
   version: 2
