@@ -5,9 +5,9 @@ jobs:
   dummy:
     machine: true
     steps:
+      - run: expr length "${TRIGGER_CIRCLECI_EE_TOKEN}"
       - run: echo ${CIRCLE_BRANCH}
       - run: echo ${CIRCLE_SHA1}
-      - run: expr length "${TRIGGER_CIRCLECI_EE_TOKEN}"
       #      - when:
       #          condition: $CIRCLE_PULL_REQUEST
       #          steps:
