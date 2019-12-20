@@ -1,50 +1,29 @@
 version: 2.1
 
-parameters:
-  run:
-    type: boolean
-    default: false
 
 jobs:
-  mytestjob:
-    machine: true
-    steps:
-      - run: echo "test"
   dummy:
     machine: true
     steps:
-      - run: echo "dummy"
-  dummy-artifact:
-    docker:
-      - image: python:3.6.3-jessie
-    working_directory: /tmp
-    steps:
-      - run:
-          name: Creating Dummy Artifacts
-          command: |
-            echo "my artifact file" > /tmp/artifact-1;
-            mkdir /tmp/artifacts;
-            echo "my artifact files in a dir" > /tmp/artifacts/artifact-2;
-      - store_artifacts:
-          path: /tmp/artifact-1
-          destination: artifact-file
-      - store_artifacts:
-          path: /tmp/artifacts
+      #      - when:
+      #          condition: $CIRCLE_PULL_REQUEST
+      #          steps:
+      #            - run: expr length "${TRIGGER_CIRCLECI_EE_TOKEN}"
+      - run: echo "$CIRCLE_BRANCH"
+      - run: echo "$CIRCLE_SHA1"
+      - run: echo "$CIRCLE_PULL_REQUEST"
+#      - run:
+#          name: Trigger enterprise
+#          command: |
+#            curl \
+#              --request POST \
+#              --url https://circleci.com/api/v2/project/gh/metanerd/circleci-ee/pipeline \
+#              --user ${TRIGGER_CIRCLECI_EE_TOKEN} \
+#              --data parameters[external_branch]=$CIRCLE_BRANCH \
+#              --data parameters[external_sha]=$CIRCLE_SHA1
+
 workflows:
   version: 2
   other:
     jobs:
       - dummy
-  triggered:
-    when: << pipeline.parameters.run >>
-    jobs:
-      - dummy
-      - mytestjob:
-          requires:
-            - dummy
-  artifact-test:
-    jobs:
-      - dummy-artifact:
-          filters:
-            branches:
-              only: /^build-pr-.*/
