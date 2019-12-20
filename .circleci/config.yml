@@ -1,69 +1,29 @@
 version: 2.1
 
-#parameters:
-#  run:
-#    type: boolean
-#    default: false
 
 jobs:
-#  mytestjob:
-#    machine: true
-#    steps:
-#      - run: echo "test"
-#      - run: echo ${CIRCLE_BRANCH}
   dummy:
     machine: true
     steps:
-      - run: echo "dummy"
-      - run: echo ${CIRCLE_BRANCH}
-      - run: echo ${HOME}
-      - when:
-          condition: $CIRCLE_PULL_REQUEST
-          steps:
-            - run: expr length "${GITHUB_USER_TOKEN}"
-            - run: expr length "${TRIGGER_CIRCLECI_EE_TOKEN}"
-            - run:
-                name: Trigger enterprise
-                command: |
-                  curl \
-                    --request POST \
-                    --url https://circleci.com/api/v2/project/gh/metanerd/circleci-ee/pipeline \
-                    --user ${TRIGGER_CIRCLECI_EE_TOKEN} \
-                    --header 'content-type: application/json' \
-                    --data '{"parameters": {"branch_external": "${CIRCLE_BRANCH}", "sha": "${CIRCLE_SHA1}"}}'
-
-#  dummy-artifact:
-#    docker:
-#      - image: python:3.6.3-jessie
-#    working_directory: /tmp
-#    steps:
+      #      - when:
+      #          condition: $CIRCLE_PULL_REQUEST
+      #          steps:
+      #            - run: expr length "${TRIGGER_CIRCLECI_EE_TOKEN}"
+      - run: echo "$CIRCLE_BRANCH"
+      - run: echo "$CIRCLE_SHA1"
+      - run: echo "$CIRCLE_PULL_REQUEST"
 #      - run:
-#          name: Creating Dummy Artifacts
+#          name: Trigger enterprise
 #          command: |
-#            echo "my artifact file" > /tmp/artifact-1;
-#            mkdir /tmp/artifacts;
-#            echo "my artifact files in a dir" > /tmp/artifacts/artifact-2;
-#      - store_artifacts:
-#          path: /tmp/artifact-1
-#          destination: artifact-file
-#      - store_artifacts:
-#          path: /tmp/artifacts
+#            curl \
+#              --request POST \
+#              --url https://circleci.com/api/v2/project/gh/metanerd/circleci-ee/pipeline \
+#              --user ${TRIGGER_CIRCLECI_EE_TOKEN} \
+#              --data parameters[external_branch]=$CIRCLE_BRANCH \
+#              --data parameters[external_sha]=$CIRCLE_SHA1
+
 workflows:
   version: 2
   other:
     jobs:
       - dummy:
-          context: metanerd-trigger-ee
-#  triggered:
-#    when: << pipeline.parameters.run >>
-#    jobs:
-#      - dummy
-#      - mytestjob:
-#          requires:
-#            - dummy
-#  artifact-test:
-#    jobs:
-#      - dummy-artifact:
-#          filters:
-#            branches:
-#              only: /^build-pr-.*/
