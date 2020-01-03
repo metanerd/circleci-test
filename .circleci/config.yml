@@ -5,13 +5,16 @@ jobs:
   dummy:
     machine: true
     steps:
-      #      - when:
-      #          condition: $CIRCLE_PULL_REQUEST
-      #          steps:
+      - when:
+          condition: $CIRCLE_BRANCH
+          steps:
+            - run: echo "$CIRCLE_BRANCH"
+      - when:
+          condition: $CIRCLE_PULL_REQUEST
+          steps:
+            - run: echo "$CIRCLE_SHA1"
+            - run: echo "$CIRCLE_PULL_REQUEST"
       #            - run: expr length "${TRIGGER_CIRCLECI_EE_TOKEN}"
-      - run: echo "$CIRCLE_BRANCH"
-      - run: echo "$CIRCLE_SHA1"
-      - run: echo "$CIRCLE_PULL_REQUEST"
 #      - run:
 #          name: Trigger enterprise
 #          command: |
