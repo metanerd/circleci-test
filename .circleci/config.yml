@@ -13,7 +13,7 @@ jobs:
   dummy:
     machine: true
     steps:
-      - run: echo "dummy"
+      - run: echo "Lots of artifacts!"
   dummy-artifact:
     docker:
       - image: python:3.6.3-jessie
