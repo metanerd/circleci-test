@@ -44,6 +44,7 @@ workflows:
     jobs:
       - hello-world
       - approve-ee:
+          context: metanerd-trigger-ee
           type: approval
       - ee:
           context: metanerd-trigger-ee
