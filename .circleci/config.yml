@@ -40,7 +40,7 @@ jobs:
 
 workflows:
   version: 2
-  other:
+  trigger-ee-tests:
     jobs:
       - hello-world
       - approve-ee:
