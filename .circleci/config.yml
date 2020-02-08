@@ -1,50 +1,52 @@
 version: 2.1
 
-parameters:
-  run:
-    type: boolean
-    default: false
 
 jobs:
-  mytestjob:
+  hello-world:
     machine: true
     steps:
-      - run: echo "test"
-  dummy:
+      - run: echo "hello world!"
+
+  ee:
     machine: true
     steps:
-      - run: echo "dummy"
-  dummy-artifact:
-    docker:
-      - image: python:3.6.3-jessie
-    working_directory: /tmp
-    steps:
+      - run: echo "$CIRCLE_BRANCH"
       - run:
-          name: Creating Dummy Artifacts
+          name: Trigger enterprise
           command: |
-            echo "my artifact file" > /tmp/artifact-1;
-            mkdir /tmp/artifacts;
-            echo "my artifact files in a dir" > /tmp/artifacts/artifact-2;
-      - store_artifacts:
-          path: /tmp/artifact-1
-          destination: artifact-file
-      - store_artifacts:
-          path: /tmp/artifacts
+            if [[ $(expr length "${TRIGGER_CIRCLECI_EE_TOKEN}") == 0 ]]
+            then
+              echo "Please create a PR and retrigger the pipeline with an empty commit, like e.g. `git add . && git commit --allow-empty -m "Trigger ci" && git push`. "
+              exit 1
+            elif [[ $(grep -c "^pull\/[0-9]*$" <(echo $CIRCLE_BRANCH)) == 0 ]]
+            then
+              echo "Enterprise tests will be run with branch name $CIRCLE_BRANCH. "
+              curl \
+                --request POST \
+                --url https://circleci.com/api/v2/project/gh/metanerd/circleci-ee/pipeline \
+                --user ${TRIGGER_CIRCLECI_EE_TOKEN} \
+                --data branch=$CIRCLE_BRANCH \
+                --data parameters[external_branch]=$CIRCLE_BRANCH \
+                --data parameters[external_sha]=$CIRCLE_SHA1
+            else
+              echo "Enterprise tests will be run with master branch. "
+              curl \
+                --request POST \
+                --url https://circleci.com/api/v2/project/gh/metanerd/circleci-ee/pipeline \
+                --user ${TRIGGER_CIRCLECI_EE_TOKEN} \
+                --data parameters[external_branch]=$CIRCLE_BRANCH \
+                --data parameters[external_sha]=$CIRCLE_SHA1
+            fi
+
 workflows:
   version: 2
-  other:
+  trigger-ee-tests:
     jobs:
-      - dummy
-  triggered:
-    when: << pipeline.parameters.run >>
-    jobs:
-      - dummy
-      - mytestjob:
+      - hello-world
+      - approve-ee:
+          context: metanerd-trigger-ee
+          type: approval
+      - ee:
+          context: metanerd-trigger-ee
           requires:
-            - dummy
-  artifact-test:
-    jobs:
-      - dummy-artifact:
-          filters:
-            branches:
-              only: /^build-pr-.*/
+            - approve-ee
