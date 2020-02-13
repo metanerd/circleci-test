@@ -14,21 +14,29 @@ jobs:
     machine: true
     steps:
       - run: echo "Lots of artifacts!"
-  artifacts:
+  artifact-ios:
     docker:
       - image: python:3.6.3-jessie
     working_directory: /tmp
     steps:
       - run:
-          name: Creating fast artifact
+          name: Creating ios artifact
           command: |
-            mkdir /tmp/artifacts;
-            echo "my artifact files in a dir" > /tmp/artifacts/artifact-2;
             sleep 180;
-            mkdir -p /tmp/artifacts;
-            echo "my artifact files in a dir" > /tmp/artifacts/artifact-3;
+            echo "ios" > Mattermost_Beta.ipa;
       - store_artifacts:
-          path: /tmp/artifacts
+          path: "Mattermost_Beta.ipa"
+  artifact-android:
+    docker:
+      - image: python:3.6.3-jessie
+    working_directory: /tmp
+    steps:
+      - run:
+          name: Creating android artifact
+          command: |
+            echo "android" > Mattermost_Beta.apk;
+      - store_artifacts:
+          path: "Mattermost_Beta.apk"
 
 workflows:
   version: 2
@@ -44,7 +52,11 @@ workflows:
             - dummy
   artifact-test:
     jobs:
-      - artifacts:
+      - artifact-ios:
+          filters:
+            branches:
+              only: /^build-pr-.*/
+      - artifact-android:
           filters:
             branches:
               only: /^build-pr-.*/
