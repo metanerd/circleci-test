@@ -14,20 +14,30 @@ jobs:
     machine: true
     steps:
       - run: echo "Lots of artifacts!"
-  dummy-artifact:
+  artifact-fast:
     docker:
       - image: python:3.6.3-jessie
     working_directory: /tmp
     steps:
       - run:
-          name: Creating Dummy Artifacts
+          name: Creating fast artifact
           command: |
-            echo "my artifact file" > /tmp/artifact-1;
             mkdir /tmp/artifacts;
             echo "my artifact files in a dir" > /tmp/artifacts/artifact-2;
       - store_artifacts:
-          path: /tmp/artifact-1
-          destination: artifact-file
+          path: /tmp/artifacts
+
+  artifact-slow:
+    docker:
+      - image: python:3.6.3-jessie
+    working_directory: /tmp
+    steps:
+      - run:
+         name: Creating slow artifact
+         command: |
+           sleep 180;
+           mkdir /tmp/artifacts;
+           echo "my artifact files in a dir" > /tmp/artifacts/artifact-3;
       - store_artifacts:
           path: /tmp/artifacts
 workflows:
@@ -44,7 +54,11 @@ workflows:
             - dummy
   artifact-test:
     jobs:
-      - dummy-artifact:
+      - artifact-fast:
+          filters:
+            branches:
+              only: /^build-pr-.*/
+      - artifact-slow:
           filters:
             branches:
               only: /^build-pr-.*/
