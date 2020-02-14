@@ -6,45 +6,47 @@ parameters:
     default: false
 
 jobs:
-  mytestjob:
+  test:
     machine: true
     steps:
-      - run: echo "test"
-  dummy:
-    machine: true
-    steps:
-      - run: echo "dummy"
-  dummy-artifact:
+      - run: echo "hi"
+  build-ios-pr:
     docker:
       - image: python:3.6.3-jessie
     working_directory: /tmp
     steps:
       - run:
-          name: Creating Dummy Artifacts
+          name: Creating ios artifact
           command: |
-            echo "my artifact file" > /tmp/artifact-1;
-            mkdir /tmp/artifacts;
-            echo "my artifact files in a dir" > /tmp/artifacts/artifact-2;
+            sleep 180;
+            echo "ios" > /tmp/Mattermost_Beta1.ipa;
       - store_artifacts:
-          path: /tmp/artifact-1
-          destination: artifact-file
+          path: "/tmp/Mattermost_Beta1.ipa"
+  build-android-pr:
+    docker:
+      - image: python:3.6.3-jessie
+    steps:
+      - run:
+          name: Creating android artifact
+          command: |
+            echo "android" > /tmp/Mattermost_Beta.apk;
       - store_artifacts:
-          path: /tmp/artifacts
+          path: "/tmp/Mattermost_Beta.apk"
+
 workflows:
   version: 2
-  other:
-    jobs:
-      - dummy
-  triggered:
-    when: << pipeline.parameters.run >>
-    jobs:
-      - dummy
-      - mytestjob:
-          requires:
-            - dummy
   artifact-test:
     jobs:
-      - dummy-artifact:
+      - test
+      - build-ios-pr:
+          requires:
+            - test
+          filters:
+            branches:
+              only: /^build-pr-.*/
+      - build-android-pr:
+          requires:
+            - test
           filters:
             branches:
               only: /^build-pr-.*/
