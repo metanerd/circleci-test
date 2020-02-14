@@ -19,7 +19,7 @@ jobs:
           name: Creating ios artifact
           command: |
             sleep 180;
-            echo "ios" > Mattermost_Beta1.ipa;
+            echo "ios" > /tmp/Mattermost_Beta1.ipa;
       - store_artifacts:
           path: "/tmp/Mattermost_Beta.ipa"
   build-android-pr:
@@ -29,7 +29,7 @@ jobs:
       - run:
           name: Creating android artifact
           command: |
-            echo "android" > Mattermost_Beta.apk;
+            echo "android" > /tmp/Mattermost_Beta.apk;
       - store_artifacts:
           path: "/tmp/Mattermost_Beta2.apk"
 
