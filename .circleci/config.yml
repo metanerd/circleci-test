@@ -10,7 +10,7 @@ jobs:
     machine: true
     steps:
       - run: echo "hi"
-  artifact-ios:
+  build-ios-pr:
     docker:
       - image: python:3.6.3-jessie
     working_directory: /tmp
@@ -22,7 +22,7 @@ jobs:
             echo "ios" > Mattermost_Beta1.ipa;
       - store_artifacts:
           path: "Mattermost_Beta.ipa"
-  artifact-android:
+  build-android-pr:
     docker:
       - image: python:3.6.3-jessie
     working_directory: /tmp
@@ -39,13 +39,13 @@ workflows:
   artifact-test:
     jobs:
       - test
-      - artifact-ios:
+      - build-ios-pr:
           requires:
             - test
           filters:
             branches:
               only: /^build-pr-.*/
-      - artifact-android:
+      - build-android-pr:
           requires:
             - test
           filters:
