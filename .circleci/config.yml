@@ -21,18 +21,17 @@ jobs:
             sleep 180;
             echo "ios" > Mattermost_Beta1.ipa;
       - store_artifacts:
-          path: "Mattermost_Beta.ipa"
+          path: "/tmp/Mattermost_Beta.ipa"
   build-android-pr:
     docker:
       - image: python:3.6.3-jessie
-    working_directory: /tmp
     steps:
       - run:
           name: Creating android artifact
           command: |
             echo "android" > Mattermost_Beta.apk;
       - store_artifacts:
-          path: "Mattermost_Beta2.apk"
+          path: "/tmp/Mattermost_Beta2.apk"
 
 workflows:
   version: 2
