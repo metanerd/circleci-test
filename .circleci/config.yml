@@ -6,14 +6,10 @@ parameters:
     default: false
 
 jobs:
-  mytestjob:
+  test:
     machine: true
     steps:
-      - run: echo "test"
-  dummy:
-    machine: true
-    steps:
-      - run: echo "Lots of artifacts!"
+      - run: echo "hi"
   artifact-ios:
     docker:
       - image: python:3.6.3-jessie
@@ -23,7 +19,7 @@ jobs:
           name: Creating ios artifact
           command: |
             sleep 180;
-            echo "ios" > Mattermost_Beta.ipa;
+            echo "ios" > Mattermost_Beta1.ipa;
       - store_artifacts:
           path: "Mattermost_Beta.ipa"
   artifact-android:
@@ -36,27 +32,22 @@ jobs:
           command: |
             echo "android" > Mattermost_Beta.apk;
       - store_artifacts:
-          path: "Mattermost_Beta.apk"
+          path: "Mattermost_Beta2.apk"
 
 workflows:
   version: 2
-  other:
-    jobs:
-      - dummy
-  triggered:
-    when: << pipeline.parameters.run >>
-    jobs:
-      - dummy
-      - mytestjob:
-          requires:
-            - dummy
   artifact-test:
     jobs:
+      - test
       - artifact-ios:
+          requires:
+            - test
           filters:
             branches:
               only: /^build-pr-.*/
       - artifact-android:
+          requires:
+            - test
           filters:
             branches:
               only: /^build-pr-.*/
