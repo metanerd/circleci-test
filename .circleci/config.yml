@@ -7,19 +7,8 @@ jobs:
     steps:
       - run: echo "hello world!"
 
-  ee:
-    machine: true
-    steps:
-      - run: echo "$CIRCLE_BRANCH"
-
 workflows:
   version: 2
   other:
     jobs:
       - hello-world
-      - approve-ee:
-          type: approval
-      - ee:
-          context: metanerd-trigger-ee
-          requires:
-            - approve-ee
