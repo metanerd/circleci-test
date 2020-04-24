@@ -11,30 +11,6 @@ jobs:
     machine: true
     steps:
       - run: echo "$CIRCLE_BRANCH"
-      - run:
-          name: Trigger enterprise
-          command: |
-            if [[ $(expr length "${TRIGGER_CIRCLECI_EE_TOKEN}") == 0 ]]
-            then
-              echo "Please create a PR and retrigger the pipeline with an empty commit, like e.g. `git add . && git commit --allow-empty -m "Trigger ci" && git push`. "
-              exit 1
-            elif [[ $(grep -c "^pull\/[0-9]*$" <(echo $CIRCLE_BRANCH)) == 0 ]]
-            then
-              curl \
-                --request POST \
-                --url https://circleci.com/api/v2/project/gh/metanerd/circleci-ee/pipeline \
-                --user ${TRIGGER_CIRCLECI_EE_TOKEN} \
-                --data branch=$CIRCLE_BRANCH \
-                --data parameters[external_branch]=$CIRCLE_BRANCH \
-                --data parameters[external_sha]=$CIRCLE_SHA1
-            else
-              curl \
-                --request POST \
-                --url https://circleci.com/api/v2/project/gh/metanerd/circleci-ee/pipeline \
-                --user ${TRIGGER_CIRCLECI_EE_TOKEN} \
-                --data parameters[external_branch]=$CIRCLE_BRANCH \
-                --data parameters[external_sha]=$CIRCLE_SHA1
-            fi
 
 workflows:
   version: 2
